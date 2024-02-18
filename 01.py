@@ -11,9 +11,18 @@ def sleeping(name):
     print(f"{name} woke up.")
 
 
+def hygiene(name):
+    """Simulate doing morning hygiene with random durration between 1 to 2 seconds."""
+    time = randint(1, 2)
+    print(f"{name} started doing his morning hygiene. He will be done in {time}s.")
+    sleep(time)
+    print(f"{name} finished his morning hygiene.")
+
+
 def tasks(thread_id, name):
     """"""
     sleeping(name)
+    hygiene(name)
 
 
 def main():
