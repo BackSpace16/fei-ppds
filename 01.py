@@ -48,8 +48,8 @@ def recieve_call(shared, name):
 
 
 def eating(name):
-    """Simulate eating with random durration between 2 to 3 seconds."""
-    time = randint(2, 3)
+    """Simulate eating with random durration between 1 to 2 seconds."""
+    time = randint(1, 2)
     print(f"{name} started eating. He will be done in {time}s.")
     sleep(time)
     print(f"{name} finished eating.")
