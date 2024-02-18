@@ -1,9 +1,19 @@
 from fei.ppds import Thread
+from random import randint
+from time import sleep
+
+
+def sleeping(name):
+    """Simulate sleeping with random durration between 3 to 6 seconds."""
+    time = randint(3, 6)
+    print(f"{name} fell asleep. He will be sleeping {time}s.")
+    sleep(time)
+    print(f"{name} woke up.")
 
 
 def tasks(thread_id, name):
     """"""
-    print(f"{name} (id: {thread_id}) is running")
+    sleeping(name)
 
 
 def main():
