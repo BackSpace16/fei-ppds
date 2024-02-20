@@ -5,7 +5,6 @@ from time import sleep
 
 class Shared:
     """Class Shared is used for sharing a value among multiple threads."""
-
     def __init__(self):
         """Initializes the calling to False."""
         self.call = Semaphore(0)
@@ -20,9 +19,12 @@ def sleeping(name):
 
 
 def hygiene(name):
-    """Simulate doing morning hygiene with random durration between 1 to 2 seconds."""
+    """Simulate doing morning hygiene with
+    random durration between 1 to 2 seconds.
+    """
     time = randint(1, 2)
-    print(f"{name} started doing his morning hygiene. He will be done in {time}s.")
+    print(f"{name} started doing his morning hygiene. "
+          f"He will be done in {time}s.")
     sleep(time)
     print(f"{name} finished his morning hygiene.")
 
@@ -49,7 +51,10 @@ def eating(name):
 
 
 def tasks(shared, thread_id, name):
-    """"""
+    """Simulate given tasks, 
+    ensure executing eating task by first
+    thread before second thread
+    """
     sleeping(name)
     hygiene(name)
     if thread_id > 0:
@@ -60,12 +65,14 @@ def tasks(shared, thread_id, name):
 
 
 def main():
-    """Creates 2 threads demonstrating the serialization of executing a specific task."""
-    n_threads = 2
+    """Create 2 threads demonstrating the serialization
+    of executing a specific task.
+    """
+    N_THREADS = 2
     names = ["Jano","Fero"]
 
     shared = Shared()
-    threads = [Thread(tasks, shared, i, names[i]) for i in range(n_threads)]
+    threads = [Thread(tasks, shared, i, names[i]) for i in range(N_THREADS)]
     [t.join() for t in threads]
 
 
