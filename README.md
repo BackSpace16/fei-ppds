@@ -12,7 +12,7 @@ V prípade, že prvé vlákno dokončí úlohu skôr ako sa k nej dostane druhé
 
 V prípade, že je druhé vlákno rýchlejšie ako prvé, semafór inicializovaný na hodnotu `0` preruší jeho ďalšie vykonávanie až pokým prvé vlákno nezväčší hodnotu semafóra na `1`.
 
-Výpis v prípade, že druhý proces musí počkať na dokončenie úlohy prvého procesu:
+Výpis v prípade, že druhé vlákno musí počkať na dokončenie úlohy prvým vláknom:
 
     Jano fell asleep. He will be sleeping 5s.
     Fero fell asleep. He will be sleeping 5s.
@@ -30,7 +30,7 @@ Výpis v prípade, že druhý proces musí počkať na dokončenie úlohy prvéh
     Fero started eating. He will be done in 2s.
     Fero finished eating.
 
-Výpis v prípade, že prvý proces dosiahne bod serializácie skôr ako druhý proces:
+Výpis v prípade, že prvé vlákno dokončí úlohu skôr ako druhé vlákno:
 
     Jano fell asleep. He will be sleeping 3s.
     Fero fell asleep. He will be sleeping 6s.
