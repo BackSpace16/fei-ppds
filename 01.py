@@ -1,4 +1,4 @@
-from fei.ppds import Thread
+from fei.ppds import Thread, Semaphore
 from random import randint
 from time import sleep
 
@@ -8,7 +8,7 @@ class Shared:
 
     def __init__(self):
         """Initializes the calling to False."""
-        self.calling = False
+        self.call = Semaphore(0)
 
 
 def sleeping(name):
@@ -29,21 +29,14 @@ def hygiene(name):
 
 def call(shared, name):
     """Simulate calling and waiting for response."""
-    shared.calling = True
+    shared.call.signal()
     print(f"{name} is calling.")
-    if (shared.calling):
-        print(f"{name} waiting for a response.")
-    while (shared.calling):
-        pass
 
 
 def recieve_call(shared, name):
     """Simulate waiting for call and answering."""
-    if (not shared.calling):
-        print(f"{name} waiting for a call.")
-    while (not shared.calling):
-        pass   
-    shared.calling = False
+    print(f"{name} waiting for a call.")
+    shared.call.wait()
     print(f"{name} recieved call.")
 
 
