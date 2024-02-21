@@ -4,7 +4,7 @@ from fei.ppds import Thread, Mutex, Semaphore
 
 
 N_DINER = 7
-POT_CAPACITY = 5
+POT_CAPACITY = 10
 
 
 class SimpleBarrier:
@@ -19,6 +19,7 @@ class SimpleBarrier:
         self.counter += 1
         if self.counter == self.max_threads:
             self.turnstile.signal(self.max_threads)
+            self.counter = 0
         self.mutex.unlock()
         self.turnstile.wait()
 
@@ -30,28 +31,32 @@ class Shared:
         self.pot = Mutex()
         self.portions = 0
         self.barrier = SimpleBarrier(N_DINER)
+        self.barrier2 = SimpleBarrier(N_DINER)
         self.chef = Semaphore(0)
         self.chef_done = Semaphore(0)
 
 
 def diner(thread_id, shared):
     """Diner consumes dinner."""
-    sleep(randint(1,10))
-    print(f"{thread_id} dorazil k obedu")
-    shared.barrier.wait()
-    print(f"{thread_id} vypustili")
-    
-    shared.pot.lock()
-    if shared.portions > 0:
-        print(f"{thread_id} si bere jedlo")
-        shared.portions -= 1
-    else:
-        print(f"{thread_id} zistil že hrniec je prázdny, volá kuchárovi")
-        shared.chef.signal()
-        shared.chef_done.wait()
-        print(f"{thread_id} si bere jedlo")
-        shared.portions -= 1
-    shared.pot.unlock()
+    while 16:
+        sleep(randint(1,10))
+        print(f"{thread_id} dorazil k obedu")
+        shared.barrier.wait()
+        print(f"{thread_id} vypustili")
+
+        shared.pot.lock()
+        if shared.portions > 0:
+            print(f"{thread_id} si bere jedlo")
+            shared.portions -= 1
+        else:
+            print(f"{thread_id} zistil že hrniec je prázdny, volá kuchárovi")
+            shared.chef.signal()
+            shared.chef_done.wait()
+            print(f"{thread_id} si bere jedlo")
+            shared.portions -= 1
+        shared.pot.unlock()
+
+        shared.barrier2.wait()
 
 
 def chef(shared):
