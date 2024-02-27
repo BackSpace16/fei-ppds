@@ -35,10 +35,12 @@ class Shared:
         """Initialise shared variables."""
         self.pot = Mutex()
         self.portions = 10
+
         self.barrier = SimpleBarrier(N_DINER)
         self.barrier.set_unlock_text("All diners came to lunch.")
         self.barrier2 = SimpleBarrier(N_DINER)
         self.barrier2.set_unlock_text("All diners have their portion. They proceed to eat.")
+
         self.chef = Semaphore(0)
         self.chef_done = Semaphore(0)
 
@@ -55,7 +57,7 @@ def diner(thread_id, shared):
             print(f"Diner {thread_id} realised the pot is empty. Calling chef.")
             shared.chef.signal()
             shared.chef_done.wait()
-            
+
         print(f"Diner {thread_id} picked his portion.")
         shared.portions -= 1
         shared.pot.unlock()
