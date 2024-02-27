@@ -51,15 +51,13 @@ def diner(thread_id, shared):
         shared.barrier.wait()
 
         shared.pot.lock()
-        if shared.portions > 0:
-            print(f"Diner {thread_id} picked his portion.")
-            shared.portions -= 1
-        else:
+        if shared.portions <= 0:
             print(f"Diner {thread_id} realised the pot is empty. Calling chef.")
             shared.chef.signal()
             shared.chef_done.wait()
-            print(f"Diner {thread_id} picked his portion.")
-            shared.portions -= 1
+            
+        print(f"Diner {thread_id} picked his portion.")
+        shared.portions -= 1
         shared.pot.unlock()
 
         shared.barrier2.wait()
