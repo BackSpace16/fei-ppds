@@ -13,7 +13,7 @@ class SimpleBarrier:
         self.turnstile = Semaphore(0)
         self.max_threads = max_threads
         self.counter = 0
-        self.unlock_text = "Barrier unlocked."
+        self.unlock_text = None
 
     def set_unlock_text(self, text):
         self.unlock_text = text
@@ -24,7 +24,8 @@ class SimpleBarrier:
         if self.counter == self.max_threads:
             self.turnstile.signal(self.max_threads)
             self.counter = 0
-            print(self.unlock_text)
+            if self.unlock_text != None:
+                print(self.unlock_text)
         self.mutex.unlock()
         self.turnstile.wait()
 
