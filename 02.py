@@ -9,6 +9,11 @@ POT_CAPACITY = 10
 
 class SimpleBarrier:
     def __init__(self, max_threads):
+        """Initialise the barrier
+        
+        Keyword arguments:
+        max_threads -- how many threads will synchronise
+        """
         self.mutex = Mutex()
         self.turnstile = Semaphore(0)
         self.max_threads = max_threads
@@ -16,9 +21,14 @@ class SimpleBarrier:
         self.unlock_text = None
 
     def set_unlock_text(self, text):
+        """Set text to print after unlocking."""
         self.unlock_text = text
 
     def wait(self):
+        """Wait for synchronization.
+        Counter counts number of threads,
+        if they reach max_threads barrier unlocks
+        """
         self.mutex.lock()
         self.counter += 1
         if self.counter == self.max_threads:
@@ -47,7 +57,11 @@ class Shared:
 
 
 def diner(thread_id, shared):
-    """Diner consumes dinner."""
+    """Diner consumes dinner.
+    Synchronise thread with other threads,
+    then decrement portions in pot, if zero signal to chef to refill,
+    then synchronise again.
+    """
     while 16:
         sleep(randint(1,10))
         print(f"Diner {thread_id} came to lunch.")
@@ -69,7 +83,9 @@ def diner(thread_id, shared):
 
 
 def chef(shared):
-    """Chef cooks meal for diners."""
+    """Chef cooks meal for diners.
+    Wait for signalization, then refill portions into pot and signal back.
+    """
     while 42:
         shared.chef.wait()
         print("Chef is preparing food.")
