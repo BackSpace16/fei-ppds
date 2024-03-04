@@ -4,6 +4,7 @@ from fei.ppds import Thread, Mutex, Semaphore
 
 
 N_PASSENGERS = 20
+CAPACITY = 8
 
 
 class SimpleBarrier:
@@ -45,15 +46,18 @@ class Shared:
     """Shared class among multiple threads."""
     def __init__(self):
         """Initialise shared variables."""
-        self.barrier = SimpleBarrier(8)
+        self.barrier = SimpleBarrier(CAPACITY)
         self.barrier.set_unlock_text("bariera vypusta")
-        self.board = Semaphore(0)
+        self.boarded = Semaphore(0)
+        self.boardQueue = Semaphore(0)
 
 
 def train(shared):
     """ TODO """
+    print(f"prisel vlacik")
+    shared.boardQueue.signal(CAPACITY)
     print(f"caka vlacik")
-    shared.board.wait()
+    shared.boarded.wait()
     print(f"jede vlacik")
     pass
 
@@ -61,8 +65,10 @@ def train(shared):
 def passenger(id, shared):
     """ TODO """
     sleep(randint(2,10))
-    print(f"{id} pri bariere")
-    shared.barrier.wait(shared.board)
+    print(f"{id} caka")
+    shared.boardQueue.wait()
+    print(f"{id} nastupil")
+    shared.barrier.wait(shared.boarded)
     print(f"{id} vypustene")
     pass
 
