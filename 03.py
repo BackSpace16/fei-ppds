@@ -1,3 +1,5 @@
+from time import sleep
+from random import randint
 from fei.ppds import Thread, Mutex, Semaphore
 
 
@@ -21,7 +23,7 @@ class SimpleBarrier:
         """Set text to print after unlocking."""
         self.unlock_text = text
 
-    def wait(self):
+    def wait(self, semaphore = None):
         """Wait for synchronization.
         Counter counts number of threads,
         if they reach max_threads barrier unlocks
@@ -31,6 +33,8 @@ class SimpleBarrier:
         if self.counter == self.max_threads:
             self.turnstile.signal(self.max_threads)
             self.counter = 0
+            if semaphore != None:
+                semaphore.signal()
             if self.unlock_text != None:
                 print(self.unlock_text)
         self.mutex.unlock()
@@ -41,15 +45,25 @@ class Shared:
     """Shared class among multiple threads."""
     def __init__(self):
         """Initialise shared variables."""
+        self.barrier = SimpleBarrier(8)
+        self.barrier.set_unlock_text("bariera vypusta")
+        self.board = Semaphore(0)
 
 
-def train(id, shared):
+def train(shared):
     """ TODO """
+    print(f"caka vlacik")
+    shared.board.wait()
+    print(f"jede vlacik")
     pass
 
 
 def passenger(id, shared):
     """ TODO """
+    sleep(randint(2,10))
+    print(f"{id} pri bariere")
+    shared.barrier.wait(shared.board)
+    print(f"{id} vypustene")
     pass
 
 
