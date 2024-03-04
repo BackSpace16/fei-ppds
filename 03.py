@@ -3,7 +3,7 @@ from random import randint
 from fei.ppds import Thread, Mutex, Semaphore
 
 
-N_PASSENGERS = 20
+N_PASSENGERS = 8
 CAPACITY = 8
 
 
@@ -46,10 +46,15 @@ class Shared:
     """Shared class among multiple threads."""
     def __init__(self):
         """Initialise shared variables."""
-        self.barrier = SimpleBarrier(CAPACITY)
-        self.barrier.set_unlock_text("bariera vypusta")
         self.boarded = Semaphore(0)
         self.boardQueue = Semaphore(0)
+        self.boardBarrier = SimpleBarrier(CAPACITY)
+        self.boardBarrier.set_unlock_text("bariera vypusta")
+
+        self.unboarded = Semaphore(0)
+        self.unboardQueue = Semaphore(0)
+        self.unboardBarrier = SimpleBarrier(CAPACITY)
+        self.unboardBarrier.set_unlock_text("2. bariera vypusta")
 
 
 def train(shared):
@@ -59,7 +64,12 @@ def train(shared):
     print(f"caka vlacik")
     shared.boarded.wait()
     print(f"jede vlacik")
-    pass
+    sleep(randint(2,10))
+    print(f"prisel vlacik")
+    shared.unboardQueue.signal(CAPACITY)
+    print(f"caka vlacik")
+    shared.unboarded.wait()
+    print(f"jede vlacik")
 
 
 def passenger(id, shared):
@@ -68,9 +78,12 @@ def passenger(id, shared):
     print(f"{id} caka")
     shared.boardQueue.wait()
     print(f"{id} nastupil")
-    shared.barrier.wait(shared.boarded)
+    shared.boardBarrier.wait(shared.boarded)
     print(f"{id} vypustene")
-    pass
+    shared.unboardQueue.wait()
+    sleep(randint(2,10))
+    print(f"{id} vystupene")
+    shared.unboardBarrier.wait(shared.unboarded)
 
 
 def main():
