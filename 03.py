@@ -3,7 +3,7 @@ from random import randint
 from fei.ppds import Thread, Mutex, Semaphore
 
 
-N_PASSENGERS = 8
+N_PASSENGERS = 24
 CAPACITY = 8
 
 
@@ -49,40 +49,58 @@ class Shared:
         self.boarded = Semaphore(0)
         self.boardQueue = Semaphore(0)
         self.boardBarrier = SimpleBarrier(CAPACITY)
-        self.boardBarrier.set_unlock_text("bariera vypusta")
 
         self.unboarded = Semaphore(0)
         self.unboardQueue = Semaphore(0)
         self.unboardBarrier = SimpleBarrier(CAPACITY)
-        self.unboardBarrier.set_unlock_text("2. bariera vypusta")
+
+
+def load():
+    print(f"Train is empty, ready for boarding.")
+
+
+def run():
+    print(f"Train is full, departing.")
+    sleep(5)
+    print(f"Train arrived.")
+
+
+def unload():
+    print(f"Train is ready for unloading.")
+
+
+def board(id):
+    sleep((randint(0,20)+5)/10)
+    print(f"Passenger {id} boarded.")
+
+
+def unboard(id):
+    sleep((randint(0,20)+5)/10)
+    print(f"Passenger {id} unboarded.")
 
 
 def train(shared):
     """ TODO """
-    print(f"prisel vlacik")
-    shared.boardQueue.signal(CAPACITY)
-    print(f"caka vlacik")
-    shared.boarded.wait()
-    print(f"jede vlacik")
-    sleep(randint(2,10))
-    print(f"prisel vlacik")
-    shared.unboardQueue.signal(CAPACITY)
-    print(f"caka vlacik")
-    shared.unboarded.wait()
-    print(f"jede vlacik")
+    while 42:
+        load()
+        shared.boardQueue.signal(CAPACITY)
+        shared.boarded.wait()
+        run()
+        unload()
+        shared.unboardQueue.signal(CAPACITY)
+        shared.unboarded.wait()
 
 
 def passenger(id, shared):
     """ TODO """
     sleep(randint(2,10))
-    print(f"{id} caka")
+
     shared.boardQueue.wait()
-    print(f"{id} nastupil")
+    board(id)
     shared.boardBarrier.wait(shared.boarded)
-    print(f"{id} vypustene")
+
     shared.unboardQueue.wait()
-    sleep(randint(2,10))
-    print(f"{id} vystupene")
+    unboard(id)
     shared.unboardBarrier.wait(shared.unboarded)
 
 
