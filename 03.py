@@ -28,6 +28,9 @@ class SimpleBarrier:
         """Wait for synchronization.
         Counter counts number of threads,
         if they reach max_threads barrier unlocks
+
+        Keyword arguments:
+        semaphore -- signalize after barrier unlocking (default None)
         """
         self.mutex.lock()
         self.counter += 1
@@ -80,7 +83,7 @@ def unboard(id):
 
 
 def train(shared):
-    """ TODO """
+    """Load passengers, run and unload passengers in loop."""
     while 42:
         load()
         shared.board_queue.signal(CAPACITY)
@@ -92,7 +95,7 @@ def train(shared):
 
 
 def passenger(id, shared):
-    """ TODO """
+    """Wait for train, then board, take a ride and unboard in loop."""
     while 42:
         sleep(randint(2,10))
 
@@ -106,7 +109,7 @@ def passenger(id, shared):
 
 
 def main():
-    """."""
+    """Simulate the roller coaster synchronization problem."""
     shared = Shared()
     threads = [Thread(passenger, i, shared) for i in range(N_PASSENGERS)]
     threads.append(Thread(train, shared))
