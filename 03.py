@@ -47,12 +47,12 @@ class Shared:
     def __init__(self):
         """Initialise shared variables."""
         self.boarded = Semaphore(0)
-        self.boardQueue = Semaphore(0)
-        self.boardBarrier = SimpleBarrier(CAPACITY)
+        self.board_queue = Semaphore(0)
+        self.board_barrier = SimpleBarrier(CAPACITY)
 
         self.unboarded = Semaphore(0)
-        self.unboardQueue = Semaphore(0)
-        self.unboardBarrier = SimpleBarrier(CAPACITY)
+        self.unboard_queue = Semaphore(0)
+        self.unboard_barrier = SimpleBarrier(CAPACITY)
 
 
 def load():
@@ -83,11 +83,11 @@ def train(shared):
     """ TODO """
     while 42:
         load()
-        shared.boardQueue.signal(CAPACITY)
+        shared.board_queue.signal(CAPACITY)
         shared.boarded.wait()
         run()
         unload()
-        shared.unboardQueue.signal(CAPACITY)
+        shared.unboard_queue.signal(CAPACITY)
         shared.unboarded.wait()
 
 
@@ -96,13 +96,13 @@ def passenger(id, shared):
     while 42:
         sleep(randint(2,10))
 
-        shared.boardQueue.wait()
+        shared.board_queue.wait()
         board(id)
-        shared.boardBarrier.wait(shared.boarded)
+        shared.board_barrier.wait(shared.boarded)
 
-        shared.unboardQueue.wait()
+        shared.unboard_queue.wait()
         unboard(id)
-        shared.unboardBarrier.wait(shared.unboarded)
+        shared.unboard_barrier.wait(shared.unboarded)
 
 
 def main():
