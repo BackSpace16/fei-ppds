@@ -3,7 +3,7 @@ from random import randint
 from fei.ppds import Thread, Mutex, Semaphore
 
 
-N_PASSENGERS = 24
+N_PASSENGERS = 20
 CAPACITY = 8
 
 
@@ -93,15 +93,16 @@ def train(shared):
 
 def passenger(id, shared):
     """ TODO """
-    sleep(randint(2,10))
+    while 42:
+        sleep(randint(2,10))
 
-    shared.boardQueue.wait()
-    board(id)
-    shared.boardBarrier.wait(shared.boarded)
+        shared.boardQueue.wait()
+        board(id)
+        shared.boardBarrier.wait(shared.boarded)
 
-    shared.unboardQueue.wait()
-    unboard(id)
-    shared.unboardBarrier.wait(shared.unboarded)
+        shared.unboardQueue.wait()
+        unboard(id)
+        shared.unboardBarrier.wait(shared.unboarded)
 
 
 def main():
