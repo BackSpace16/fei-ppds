@@ -23,6 +23,10 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 nproc = comm.Get_size()
 
+if nproc > NRA:
+    comm = MPI.COMM_WORLD.Split(color=(rank < NRA))
+    nproc = comm.Get_size()
+
 rows = NRA // nproc
 rows_modulo = NRA % nproc
 
@@ -50,30 +54,31 @@ if rank == MASTER:
 A_loc = comm.scatter(A, root = MASTER)
 B = comm.bcast(B, root = MASTER)
 
-# Perform sequential matrix multiplication
-C_loc = np.zeros((rows, NCB), dtype = int)
-for i in range(rows):
-    for j in range(NCB):
-        for k in range(NCA):
-            C_loc[i][j] += A_loc[i][k] * B[k][j]
+if rank < nproc:
+    # Perform sequential matrix multiplication
+    C_loc = np.zeros((rows, NCB), dtype = int)
+    for i in range(rows):
+        for j in range(NCB):
+            for k in range(NCA):
+                C_loc[i][j] += A_loc[i][k] * B[k][j]
 
-# Combine results into matrix C
-C = comm.gather(C_loc, root = MASTER)
-if rank == MASTER:
-    C = np.array([ss for s in C for ss in s])
-
-# Perform sequential matrix multiplication on tail part if needed
-if rows_modulo != 0 and rank < rows_modulo:
-    A_tail_loc = comm_tail.scatter(A_tail, root = MASTER)
-    C_tail_loc = np.zeros((1, NCB), dtype = int)
-
-    for j in range(NCB):
-        for k in range(NCA):
-            C_tail_loc[0][j] += A_tail_loc[0][k] * B[k][j]
-
-    C_tail = comm_tail.gather(C_tail_loc, root = MASTER)
+    # Combine results into matrix C
+    C = comm.gather(C_loc, root = MASTER)
     if rank == MASTER:
-        C_tail = np.array([ss for s in C_tail for ss in s])
+        C = np.array([ss for s in C for ss in s])
+
+    # Perform sequential matrix multiplication on tail part if needed
+    if rows_modulo != 0 and rank < rows_modulo:
+        A_tail_loc = comm_tail.scatter(A_tail, root = MASTER)
+        C_tail_loc = np.zeros((1, NCB), dtype = int)
+
+        for j in range(NCB):
+            for k in range(NCA):
+                C_tail_loc[0][j] += A_tail_loc[0][k] * B[k][j]
+
+        C_tail = comm_tail.gather(C_tail_loc, root = MASTER)
+        if rank == MASTER:
+            C_tail = np.array([ss for s in C_tail for ss in s])
 
 # Add tail part into final matrix C if needed
 if rank == MASTER:
