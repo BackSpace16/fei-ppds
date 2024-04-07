@@ -27,16 +27,16 @@ V nasledujúcom grafe sa môžme pozrieť na výsledky meraní násobenia matií
 
 V ďalších grafoch môžeme pozorovať priemery výsledkov meraní pre štvorcové matice s rôznym počtom procesov pre obidve metódy.
 
-![Graf 2](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/allsquare.png?raw=true | width=400)
-![Graf 3](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/smallsquare.png?raw=true | width=400)
+<img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/allsquare.png?raw=true" width=50% height=50%>
+<img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/smallsquare.png?raw=true" width=50% height=50%>
 
 Nasledujúci graf porovnáva neštvorcové matice s výsledkom `48x432` a `432x48` a matice `48x48`.
 
-![Graf 4](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/notsquare.png?raw=true | width=400)
+<img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/notsquare.png?raw=true" width=50% height=50%>
 
 Posledné 2 grafy ukazujú porovnanie metód komunikácie pri násobení najmenších meraných matíc `48x48` a najväčších meraných `432x432`, kde môžeme pozorovať lepšie výsledky P2P komunikácie pri násobení malých matíc.
 
-![Graf 5](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[48,48].png?raw=true | width=400)
-![Graf 6](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[432,432].png?raw=true | width=400)
+<img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[48,48].png?raw=true" width=50% height=50%>
+<img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[432,432].png?raw=true" width=50% height=50%>
 
 Nakoniec môžem konštatovať, že rýchlosť obidvoch metód komunikácie je vo väčšine prípadoch veľmi podobná, môžeme však pozorovať o trošku lepšie výsledky pri použití kolektívnej komunikácie. Môžeme si však všimnúť, že metóda P2P komunikácie je o trošku rýchlejšia pri násobení najmenších meraných matíc `48x48`.
