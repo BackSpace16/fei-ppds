@@ -62,6 +62,8 @@ for t in range(N_ATTEMPTS):
 
         start_time = MPI.Wtime()
     A_loc = comm.scatter(A, root = MASTER)
+    if rows_modulo != 0 and rank < rows_modulo:
+        A_tail_loc = comm_tail.scatter(A_tail, root = MASTER)
     B = comm.bcast(B, root = MASTER)
 
     if rank < nproc:
@@ -79,7 +81,6 @@ for t in range(N_ATTEMPTS):
 
         # Perform sequential matrix multiplication on tail part if needed
         if rows_modulo != 0 and rank < rows_modulo:
-            A_tail_loc = comm_tail.scatter(A_tail, root = MASTER)
             C_tail_loc = np.zeros((1, NCB), dtype = int)
 
             for j in range(NCB):
