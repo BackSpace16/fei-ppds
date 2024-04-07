@@ -22,7 +22,7 @@ NCB = 48  # number of columns in matrix B
 
 MASTER = 0
 N_ATTEMPTS = 25
-CSV = f"{N_ATTEMPTS}_times_C[{str(NRA)},{str(NCB)}]_par.csv"
+CSV = f"data/{N_ATTEMPTS}_times_C[{str(NRA)},{str(NCB)}]_par.csv"
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()

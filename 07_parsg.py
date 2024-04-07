@@ -15,14 +15,14 @@ import csv
 import os
 
 
-NRA = 48   # number of rows in matrix A
+NRA = 24   # number of rows in matrix A
 NCA = 48  # number of columns in matrix A
 NCB = 48  # number of columns in matrix B
 
 
 MASTER = 0
-N_ATTEMPTS = 25
-CSV = f"{N_ATTEMPTS}_times_C[{str(NRA)},{str(NCB)}]_parsg.csv"
+N_ATTEMPTS = 1
+CSV = f"data/{N_ATTEMPTS}_times_C[{str(NRA)},{str(NCB)}]_parsg.csv"
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
