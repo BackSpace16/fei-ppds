@@ -23,20 +23,20 @@ Výsledky sú zapísané v csv súboroch s názvom:
 
 V nasledujúcom grafe sa môžme pozrieť na výsledky meraní násobenia matiíc `48x48` paralelne s rôznym počtom procesov s P2P metódou komunikácie.
 
-![Graf 1](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/C[48,48]_par.png?raw=true)
+![Graf 1](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[48,48]_par.png?raw=true)
 
 V ďalších grafoch môžeme pozorovať priemery výsledkov meraní pre štvorcové matice s rôznym počtom procesov pre obidve metódy.
 
-![Graf 2](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/allsquare.png?raw=true)
-![Graf 3](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/smallsquare.png?raw=true)
+![Graf 2](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/allsquare.png?raw=true)
+![Graf 3](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/smallsquare.png?raw=true)
 
 Nasledujúci graf porovnáva neštvorcové matice s výsledkom `48x432` a `432x48` a matice `48x48`.
 
-![Graf 4](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/notsquare.png?raw=true)
+![Graf 4](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/notsquare.png?raw=true)
 
 Posledné 2 grafy ukazujú porovnanie metód komunikácie pri násobení najmenších meraných matíc `48x48` a najväčších meraných `432x432`, kde môžeme pozorovať lepšie výsledky P2P komunikácie pri násobení malých matíc.
 
-![Graf 5](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/C[48,48].png?raw=true)
-![Graf 6](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graph/C[432,432].png?raw=true)
+![Graf 5](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[48,48].png?raw=true)
+![Graf 6](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/07/graphs/C[432,432].png?raw=true)
 
 Nakoniec môžem konštatovať, že rýchlosť obidvoch metód komunikácie je vo väčšine prípadoch veľmi podobná, môžeme však pozorovať o trošku lepšie výsledky pri použití kolektívnej komunikácie. Môžeme si však všimnúť, že metóda P2P komunikácie je o trošku rýchlejšia pri násobení najmenších meraných matíc `48x48`.
