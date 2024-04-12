@@ -5,7 +5,7 @@ import numpy as np
 ARRAY_LENGTH = 100
 MIN_VALUE = 0
 MAX_VALUE = 100
-N_BUCKETS = 3
+N_BUCKETS = 10
 MAX_THREADS = 32
 
 
@@ -71,7 +71,9 @@ def sample_sort(data, p):
     samples = np.empty(0, dtype=int)
     for i in range(0,N_BUCKETS):
         for j in range(0,N_BUCKETS-1):
-            samples = np.append(samples, data[i*bucket_size + j*sample_distance+sample_distance-1])
+            index = i*bucket_size + j*sample_distance+sample_distance-1
+            if index < data.size:
+                samples = np.append(samples, data[index])
 
     # sort samples and choose splitters from samples
     samples = np.sort(samples)
