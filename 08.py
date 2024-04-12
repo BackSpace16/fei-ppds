@@ -1,19 +1,86 @@
-import random
+from numba import cuda
 import numpy as np
 
 
-LIST_LENGTH = 10
+ARRAY_LENGTH = 100
 MIN_VALUE = 0
 MAX_VALUE = 100
-N_BUCKETS = 4
+N_BUCKETS = 3
+MAX_THREADS = 32
+
+
+@cuda.jit
+def insertion_sort(arr):
+    n = arr.shape[0]
+    for i in range(1, n):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+
+@cuda.jit
+def sort_evenly(data, bucket_size):
+    pos = cuda.grid(1)
+    start = pos * bucket_size
+    end = start + bucket_size
+
+    print("Thread", pos, ":", start, "-", end)
+    if pos < data.shape[0]:
+        insertion_sort(data[start:end])
+
+        
+@cuda.jit
+def sort_splitters(data, lengths):
+    pos = cuda.grid(1)
+    start = lengths[pos]
+    end = lengths[pos+1]
+
+    print("Thread", pos, ":", start, "-", end)
+    if pos < data.shape[0]:
+        insertion_sort(data[start:end])
 
 
 def sample_sort(data, p):
+    blocks = N_BUCKETS // MAX_THREADS + 1
+    if N_BUCKETS < MAX_THREADS:
+        threads = N_BUCKETS
+    else:
+        threads = MAX_THREADS
 
-    # choose and sort samples
-    samples = np.random.choice(data, p-1, replace=False)
-    samples.sort()
-    splitters = np.concatenate(([MIN_VALUE-1], samples, [MAX_VALUE+1]))
+    bucket_size = data.size // N_BUCKETS
+    if data.size % N_BUCKETS != 0:
+        bucket_size += 1
+    
+    print("\nBlocks and threads:")
+    print((blocks,threads))
+
+    # divide array to N_BUCKET parts and sort them
+    print("\nThread part division:")
+    data_mem = cuda.to_device(data)
+    sort_evenly[blocks,threads](data_mem, bucket_size)
+    data = data_mem.copy_to_host()
+
+    print("\nSorted parts:")
+    print(data)
+
+    # choose samples from sorted parts
+    sample_distance = bucket_size // N_BUCKETS + 1
+    samples = np.empty(0, dtype=int)
+    for i in range(0,N_BUCKETS):
+        for j in range(0,N_BUCKETS-1):
+            samples = np.append(samples, data[i*bucket_size + j*sample_distance+sample_distance-1])
+
+    # sort samples and choose splitters from samples
+    samples = np.sort(samples)
+    choosing_index = N_BUCKETS//2
+    splitters = np.empty(0, dtype=int)
+    for i in range(0,samples.size,N_BUCKETS):
+        splitters = np.append(splitters,samples[i+choosing_index])
+    splitters = np.concatenate(([MIN_VALUE-1], splitters, [MAX_VALUE+1]))
+    print("\nSplitters:")
     print(splitters)
 
     # create buckets from samples
@@ -25,21 +92,36 @@ def sample_sort(data, p):
             j += 1
         buckets[j] = np.append(buckets[j], a)
 
-    # sort buckets
+    lengths = np.empty(0,dtype=int)
+    lengths = np.append(lengths,0)
     for b in buckets:
-        b.sort()
+        lengths = np.append(lengths,lengths[-1]+b.size)
 
-    # concentrate buckets
+    print("\nBucket lengths (splitter indices):")
+    print(lengths)
+    print("\nBuckets:")
+    print(buckets)
+
+    # sort buckets
     data = np.concatenate(buckets)
+
+    print("\nThread bucket division:")
+    data_mem = cuda.to_device(data)
+    sort_splitters[blocks,threads](data_mem, lengths)
+    data = data_mem.copy_to_host()
+
     return data
 
 
 def main():
-    list = np.random.randint(MIN_VALUE, MAX_VALUE, size=LIST_LENGTH)
+    list = np.random.randint(MIN_VALUE, MAX_VALUE, size=ARRAY_LENGTH)
+    
+    print("Data:")
     print(list)
 
     sorted_list = sample_sort(list, N_BUCKETS)
 
+    print("\nResult:")
     print(sorted_list)
 
 
