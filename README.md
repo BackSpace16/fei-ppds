@@ -17,11 +17,15 @@ Samotný algoritmus samplesort vykonáva triedenie v nasledujúcich krokoch:
 
 Nakoniec som urobil porovnanie paralelného samplesortu v súbore `08.py` a sériového insertion sortu v súbore `08_ser.py` s rôznou dľžkou poľa `ARRAY_LENGTH` s hodnotami vždy v rozsahu 0-99. Pre meranie času som použil funkciu `cuda.event_elapsed_time()` a rozdiel časov udalostí `cuda.event()` vždy na začiatku a konci vykonávania algoritmu. Výsledky porovnania sú nasledovné:
 
-tabuľka
-1000000           19349.61 (100)
-100000            8428.28 (10) 1300.15 (50) 1571.02 (100)
-10000    3771.05  445.08(10) 463.96 (50)   477.19(100)
-5000     934.64   366.62(10)   357.85 (50)   393.75 (100)
-1000     34.83    337.24 (10)   315.61 (50)   401.70 (100)
-100      0.37     310.62 (10)
-C U D A
+| Dĺžka pola | Čas trvania sérioveho insertion sortu (ms) |                   | Čas trvania paralelného sample sortu (ms) * |                 |
+|:----------:|:------------------------------------------:|:-----------------:|:-----------------------------------------:|:---------------:|
+|        100 |                                       0.37 |       (10) 310.62 |                                           |                 |
+|      1 000 |                                      34.83 |       (10) 337.24 |                               (50) 315.61 |    (100) 401.70 |
+|      5 000 |                                     934.64 |       (10) 366.62 |                               (50) 357.85 |    (100) 393.75 |
+|     10 000 |                                   3 771.05 |       (10) 445.08 |                               (50) 463.96 |    (100) 477.19 |
+|    100 000 |                                          - |     (10) 8 428.18 |                             (50) 1 300.15 |  (100) 1 571.02 |
+|  1 000 000 |                                          - | (1000) 505 312.56 |                           (500) 46 266.34 | (100) 19 349.61 |
+
+\* Počet bucketov v zátvorke
+
+Z výsledkov môžeme pozorovať jednoznačnú výhodu paralelného algoritmu pri veľkých poliach. Môžme taktiež pozorovať zvýšený čas spracovania pri väčšom množstve bucketov, keďže časť algoritmu kde prebieha výber vzoriek a roztriedenie do bucketov je v mojej implementácií spracovaná sériovo.
