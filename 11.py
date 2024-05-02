@@ -1,5 +1,5 @@
 from queue import Queue
-from time import sleep
+from time import sleep, time
 
 
 class Scheduler:
@@ -20,6 +20,7 @@ class Scheduler:
 
 
 def coprogram1(n):
+    print(f"Coprogram 1: starting")
     i = 0
     while i < n:
         sleep(0.5)
@@ -28,12 +29,32 @@ def coprogram1(n):
         i += 1
 
 
+def coprogram2(i,n):
+    print(f"Coprogram 2: starting")
+    while i < n:
+        sleep(0.5)
+        print(f"Coprogram 2: {i}")
+        i = i * 2
+        yield
+
+
+def coprogram3():
+    print(f"Coprogram 3: starting")
+    start_time = time()
+    while True:
+        sleep(0.5)
+        print(f"Coprogram 3: {(time() - start_time):.4f}s elapsed")
+        if time() - start_time > 30:
+            break
+        yield
+
+
 def main():
     scheduler = Scheduler()
 
     task1 = coprogram1(5)
-    task2 = coprogram1(10)
-    task3 = coprogram1(30)
+    task2 = coprogram2(1,5000)
+    task3 = coprogram3()
 
     scheduler.add_job(task1)
     scheduler.add_job(task2)
