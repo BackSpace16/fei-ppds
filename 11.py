@@ -4,12 +4,17 @@ from time import sleep, time
 
 class Scheduler:
     def __init__(self):
+        """Initialise queue of tasks."""
         self.tasks = Queue()
 
     def add_job(self, iterator):
+        """Add task to queue."""
         self.tasks.put(iterator)
 
     def start(self):
+        """Get task from queue and call next() on its generator object
+        then put it back into queue.
+        """
         while not self.tasks.empty():
             task = self.tasks.get()
             try:
@@ -35,7 +40,7 @@ def coprogram2(i, n):
     print(f"Coprogram 2: starting")
     while i < n:
         sleep(0.5)
-        print(f"Coprogram 2: {i}")        
+        print(f"Coprogram 2: {i}")
         i = 1 if i == 0 else i * 2
         yield
 
@@ -50,7 +55,7 @@ def coprogram3(t):
     start_time = time()
     while True:
         sleep(0.5)
-        print(f"Coprogram 3: {(time() - start_time):.4f}s elapsed")        
+        print(f"Coprogram 3: {(time() - start_time):.4f}s elapsed")
         if time() - start_time > t:
             break
         yield
