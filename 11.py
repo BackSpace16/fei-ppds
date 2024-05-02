@@ -30,13 +30,13 @@ def coprogram1(n):
         i += 1
 
 
-def coprogram2(i,n):
+def coprogram2(i, n):
     """Print powers of two from i to n."""
     print(f"Coprogram 2: starting")
     while i < n:
         sleep(0.5)
-        print(f"Coprogram 2: {i}")
-        i = i * 2
+        print(f"Coprogram 2: {i}")        
+        i = 1 if i == 0 else i * 2
         yield
 
 
