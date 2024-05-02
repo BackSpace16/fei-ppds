@@ -40,14 +40,18 @@ def coprogram2(i,n):
         yield
 
 
-def coprogram3():
-    """Print elapsed time in seconds."""
+def coprogram3(t):
+    """Print elapsed time in seconds.
+    
+    Keyword arguments:
+    t -- durration from start to stop in seconds
+    """
     print(f"Coprogram 3: starting")
     start_time = time()
     while True:
         sleep(0.5)
-        print(f"Coprogram 3: {(time() - start_time):.4f}s elapsed")
-        if time() - start_time > 30:
+        print(f"Coprogram 3: {(time() - start_time):.4f}s elapsed")        
+        if time() - start_time > t:
             break
         yield
 
@@ -58,7 +62,7 @@ def main():
 
     task1 = coprogram1(5)
     task2 = coprogram2(1,5000)
-    task3 = coprogram3()
+    task3 = coprogram3(30)
 
     scheduler.add_job(task1)
     scheduler.add_job(task2)
