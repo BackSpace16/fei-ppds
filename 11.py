@@ -28,20 +28,21 @@ def coprogram1(n):
     """Count to n and print numbers"""
     print(f"Coprogram 1: starting")
     i = 0
-    while i < n:
+    while i <= n:
         sleep(0.5)
         print(f"Coprogram 1: {i}")
-        yield
         i += 1
+        yield
 
 
-def coprogram2(i, n):
-    """Print powers of two from i to n."""
+def coprogram2(a, b):
+    """Print powers of two from a to b."""
     print(f"Coprogram 2: starting")
-    while i < n:
+    i = a
+    while i < b:
         sleep(0.5)
-        print(f"Coprogram 2: {i}")
-        i = 1 if i == 0 else i * 2
+        print(f"Coprogram 2: {2 ** i}")
+        i += 1
         yield
 
 
@@ -66,7 +67,7 @@ def main():
     scheduler = Scheduler()
 
     task1 = coprogram1(5)
-    task2 = coprogram2(1,5000)
+    task2 = coprogram2(0, 13)
     task3 = coprogram3(30)
 
     scheduler.add_job(task1)
