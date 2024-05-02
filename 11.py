@@ -20,6 +20,7 @@ class Scheduler:
 
 
 def coprogram1(n):
+    """Count to n and print numbers"""
     print(f"Coprogram 1: starting")
     i = 0
     while i < n:
@@ -30,6 +31,7 @@ def coprogram1(n):
 
 
 def coprogram2(i,n):
+    """Print powers of two from i to n."""
     print(f"Coprogram 2: starting")
     while i < n:
         sleep(0.5)
@@ -39,6 +41,7 @@ def coprogram2(i,n):
 
 
 def coprogram3():
+    """Print elapsed time in seconds."""
     print(f"Coprogram 3: starting")
     start_time = time()
     while True:
@@ -50,6 +53,7 @@ def coprogram3():
 
 
 def main():
+    """Run 3 different coprograms through scheduler."""
     scheduler = Scheduler()
 
     task1 = coprogram1(5)
