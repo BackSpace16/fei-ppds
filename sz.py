@@ -30,9 +30,41 @@ def load_adj_matrix(file_path, separator=" ",
     return adj_matrix
 
 
+def dijkstra(adj_matrix, vertex_index):
+    num_vertices = adj_matrix.shape[0]
+
+    distances = adj_matrix[vertex_index]
+    distances[vertex_index] = np.inf
+
+    queue = [i for i in range(0, num_vertices)]
+    queue.remove(vertex_index)
+
+    while len(queue):
+        u = None
+        for i in queue:
+            if u != None:
+                if distances[i] < distances[u]:
+                    u = i
+            else:
+                u = i
+
+        queue.remove(u)
+        for v in range(len(adj_matrix[u])):
+            if v in queue and adj_matrix[u][v] != np.inf:
+                alt = distances[u] + adj_matrix[u][v]
+                if alt < distances[v]:
+                    distances[v] = alt
+
+    return distances
+
+
 def main():
     adj_matrix = load_adj_matrix("inputs/input2.txt")
     print(adj_matrix)
+
+    source = 0
+    distances = dijkstra(adj_matrix, source)
+    print(distances)
 
 
 if __name__ == "__main__":
