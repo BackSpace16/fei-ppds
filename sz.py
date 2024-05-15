@@ -1,4 +1,18 @@
 import numpy as np
+from networkx import DiGraph, single_source_dijkstra_path_length
+
+
+def adjacency_matrix_to_nxgraph(adj_matrix):
+    graph = DiGraph()
+    n = len(adj_matrix)
+
+    for i in range(n):
+        for j in range(n):
+            weight = adj_matrix[i][j]
+            if weight != 0 and weight != np.inf:
+                graph.add_edge(i, j, weight=weight)
+
+    return graph
 
 
 def load_adj_matrix(file_path, separator=" ", 
@@ -65,6 +79,12 @@ def main():
     source = 0
     distances = dijkstra(adj_matrix, source)
     print(distances)
+    
+    nxgraph = adjacency_matrix_to_nxgraph(adj_matrix)
+    nx_distances = single_source_dijkstra_path_length(nxgraph, source=source, weight='weight')
+    nx_distances = np.array([nx_distances[key] for key in sorted(nx_distances.keys())])
+    nx_distances[nx_distances == 0] = np.inf
+    print(nx_distances)
 
 
 if __name__ == "__main__":
