@@ -15,6 +15,34 @@ def adjacency_matrix_to_nxgraph(adj_matrix):
     return graph
 
 
+def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
+    """Generate an adjacency matrix.
+    
+    Keyword arguments:
+    n_vertices -- number of vertices in graph (matrix size)
+    min_weight -- minimal value of weights generated
+    max_weight -- maximal value of weights generated
+    edge_density -- percentage, how dense will be edges in graph
+                    (every vertex will have at least one edge)
+    """
+    adj_matrix = np.random.randint(min_weight, max_weight, size=(n_vertices, n_vertices))
+    adj_matrix = adj_matrix.astype(float)
+    shape = adj_matrix.shape
+    
+    total_elements = adj_matrix.size
+    zero_count = 100 - int(total_elements * edge_density / 100)
+    zero_indices = np.random.choice(total_elements, zero_count, replace=False)
+
+    adj_matrix = adj_matrix.flatten()
+    adj_matrix[zero_indices] = 0
+    adj_matrix = adj_matrix.reshape(shape)
+
+    adj_matrix[adj_matrix == 0] = np.inf
+    np.fill_diagonal(adj_matrix, 0)
+
+    return adj_matrix
+
+
 def load_adj_matrix(file_path, separator=" ", 
                     skip_rows=0, skip_cols=0, none_edge=0):
     """Load file, and return data as matrix.
@@ -74,6 +102,7 @@ def dijkstra(adj_matrix, vertex_index):
 
 def main():
     adj_matrix = load_adj_matrix("inputs/input2.txt")
+    adj_matrix = generate_adj_matrix(10, 1, 20, 100)
     print(adj_matrix)
 
     source = 0
