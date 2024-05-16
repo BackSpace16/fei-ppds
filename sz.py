@@ -106,15 +106,37 @@ def dijkstra(adj_matrix, vertex_index):
     return distances
 
 
-def all_dijkstra(adj_matrix):
+def dijkstra_nxgraph(adj_matrix, vertex_index):
+    """Find shortest path from one vertex to all vertices in graph.
+    Uses graph and dijkstra function from networkx library.
+
+    Keyword arguments:
+    adj_matrix -- adjacency matrix of a graph
+    vertex_index -- index of the starting vertex
+    """
+    nxgraph = adjacency_matrix_to_nxgraph(adj_matrix)
+
+    distances = single_source_dijkstra_path_length(nxgraph, source=vertex_index, weight='weight')
+    for i in range(len(adj_matrix)):
+        if i not in distances:
+            distances[i] = 0
+
+    distances = np.array([distances[key] for key in sorted(distances.keys())])
+    distances[distances == 0] = np.inf
+
+    return distances
+
+
+def all_dijkstra(adj_matrix, dijkstra_func):
     """Find shortest path from all to all vertices in graph.
 
     Keyword arguments:
     adj_matrix -- adjacency matrix of a graph
+    dijkstra_func -- dijkstra algorithm function which will be used
     """
     distances = []
     for vertex_index in range(len(adj_matrix)):
-        row = dijkstra(adj_matrix, vertex_index)
+        row = dijkstra_func(adj_matrix, vertex_index)
         distances.append(row)
 
     distances = np.array(distances, dtype='float32')
@@ -123,17 +145,19 @@ def all_dijkstra(adj_matrix):
 
 def main():
     adj_matrix = load_adj_matrix("inputs/input2.txt")
-    adj_matrix = generate_adj_matrix(10, 1, 20, 100)
+    adj_matrix = generate_adj_matrix(10, 1, 10, 100)
     print(adj_matrix)
 
-    distances = all_dijkstra(adj_matrix)
+    distances = all_dijkstra(adj_matrix, dijkstra)
     print(distances)
     
-    nxgraph = adjacency_matrix_to_nxgraph(adj_matrix)
-    nx_distances = single_source_dijkstra_path_length(nxgraph, source=0, weight='weight')
-    nx_distances = np.array([nx_distances[key] for key in sorted(nx_distances.keys())])
-    nx_distances[nx_distances == 0] = np.inf
+    nx_distances = all_dijkstra(adj_matrix, dijkstra_nxgraph)
     print(nx_distances)
+    
+    if np.array_equal(distances, nx_distances):
+        print("Matice sú rovnaké")
+    else:
+        print("Chyba!!! Matice nie sú rovnaké")
 
 
 if __name__ == "__main__":
