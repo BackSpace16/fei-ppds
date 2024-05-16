@@ -100,17 +100,31 @@ def dijkstra(adj_matrix, vertex_index):
     return distances
 
 
+def all_dijkstra(adj_matrix):
+    """Find shortest path from all to all vertices in graph.
+
+    Keyword arguments:
+    adj_matrix -- adjacency matrix of a graph
+    """
+    distances = []
+    for vertex_index in range(len(adj_matrix)):
+        row = dijkstra(adj_matrix, vertex_index)
+        distances.append(row)
+
+    distances = np.array(distances, dtype='float32')
+    return distances
+
+
 def main():
     adj_matrix = load_adj_matrix("inputs/input2.txt")
     adj_matrix = generate_adj_matrix(10, 1, 20, 100)
     print(adj_matrix)
 
-    source = 0
-    distances = dijkstra(adj_matrix, source)
+    distances = all_dijkstra(adj_matrix)
     print(distances)
     
     nxgraph = adjacency_matrix_to_nxgraph(adj_matrix)
-    nx_distances = single_source_dijkstra_path_length(nxgraph, source=source, weight='weight')
+    nx_distances = single_source_dijkstra_path_length(nxgraph, source=0, weight='weight')
     nx_distances = np.array([nx_distances[key] for key in sorted(nx_distances.keys())])
     nx_distances[nx_distances == 0] = np.inf
     print(nx_distances)
