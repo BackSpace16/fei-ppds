@@ -73,6 +73,12 @@ def load_adj_matrix(file_path, separator=" ",
 
 
 def dijkstra(adj_matrix, vertex_index):
+    """Find shortest path from one vertex to all vertices in graph.
+
+    Keyword arguments:
+    adj_matrix -- adjacency matrix of a graph
+    vertex_index -- index of the starting vertex
+    """
     num_vertices = adj_matrix.shape[0]
 
     distances = adj_matrix[vertex_index]
