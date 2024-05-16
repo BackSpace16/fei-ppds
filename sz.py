@@ -17,6 +17,7 @@ def adjacency_matrix_to_nxgraph(adj_matrix):
 
 def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
     """Generate an adjacency matrix.
+    Ensures that there is at least one edge into and out of each vertex.
     
     Keyword arguments:
     n_vertices -- number of vertices in graph (matrix size)
@@ -25,17 +26,38 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
     edge_density -- percentage, how dense will be edges in graph
                     (every vertex will have at least one edge)
     """
-    adj_matrix = np.random.randint(min_weight, max_weight, size=(n_vertices, n_vertices))
+    adj_matrix = np.random.randint(min_weight, max_weight,
+                                   size=(n_vertices, n_vertices))
     adj_matrix = adj_matrix.astype(float)
     shape = adj_matrix.shape
     
     total_elements = adj_matrix.size
     zero_count = 100 - int(total_elements * edge_density / 100)
-    zero_indices = np.random.choice(total_elements, zero_count, replace=False)
-
+    zero_indices = np.random.choice(total_elements, zero_count,
+                                    replace=False)
+            
     adj_matrix = adj_matrix.flatten()
     adj_matrix[zero_indices] = 0
     adj_matrix = adj_matrix.reshape(shape)
+
+    for i in range(len(adj_matrix)):
+        if np.all(adj_matrix[i] == 0):
+            zero_indices = np.where(adj_matrix[i] == 0)[0]
+            zero_indices = zero_indices[zero_indices != i]
+            selected_index = np.random.choice(zero_indices)
+
+            new_value = np.random.randint(min_weight, max_weight)
+            print(f"{i}: {new_value}")
+            adj_matrix[i, selected_index] = new_value
+
+    for i in range(len(adj_matrix)):
+        if np.all(adj_matrix[:,i] == 0):
+            zero_indices = np.where(adj_matrix[:,i] == 0)[0]
+            zero_indices = zero_indices[zero_indices != i]
+            selected_index = np.random.choice(zero_indices)
+
+            new_value = np.random.randint(min_weight, max_weight)
+            adj_matrix[selected_index, i] = new_value
 
     adj_matrix[adj_matrix == 0] = np.inf
     np.fill_diagonal(adj_matrix, 0)
@@ -116,7 +138,9 @@ def dijkstra_nxgraph(adj_matrix, vertex_index):
     """
     nxgraph = adjacency_matrix_to_nxgraph(adj_matrix)
 
-    distances = single_source_dijkstra_path_length(nxgraph, source=vertex_index, weight='weight')
+    distances = single_source_dijkstra_path_length(nxgraph,
+                                                   source=vertex_index,
+                                                   weight='weight')
     for i in range(len(adj_matrix)):
         if i not in distances:
             distances[i] = 0
@@ -145,7 +169,7 @@ def all_dijkstra(adj_matrix, dijkstra_func):
 
 def main():
     adj_matrix = load_adj_matrix("inputs/input2.txt")
-    adj_matrix = generate_adj_matrix(10, 1, 10, 100)
+    adj_matrix = generate_adj_matrix(10, 1, 10, 0)
     print(adj_matrix)
 
     distances = all_dijkstra(adj_matrix, dijkstra)
