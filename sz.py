@@ -32,7 +32,7 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
     shape = adj_matrix.shape
     
     total_elements = adj_matrix.size
-    zero_count = 100 - int(total_elements * edge_density / 100)
+    zero_count = int(total_elements * ((100 - edge_density) / 100))
     zero_indices = np.random.choice(total_elements, zero_count,
                                     replace=False)
             
@@ -47,7 +47,6 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
             selected_index = np.random.choice(zero_indices)
 
             new_value = np.random.randint(min_weight, max_weight)
-            print(f"{i}: {new_value}")
             adj_matrix[i, selected_index] = new_value
 
     for i in range(len(adj_matrix)):
