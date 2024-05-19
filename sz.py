@@ -3,7 +3,7 @@ from networkx import DiGraph, single_source_dijkstra_path_length
 
 
 def adjacency_matrix_to_nxgraph(adj_matrix):
-    """Create NetworkX graph object from adjacency matrix"""
+    """Create NetworkX graph object from adjacency matrix."""
     graph = DiGraph()
     n = len(adj_matrix)
 
