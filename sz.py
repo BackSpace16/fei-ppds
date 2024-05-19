@@ -19,7 +19,7 @@ def adjacency_matrix_to_nxgraph(adj_matrix):
 def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
     """Generate an adjacency matrix.
     Ensures that there is at least one edge into and out of each vertex.
-    
+
     Keyword arguments:
     n_vertices -- number of vertices in graph (matrix size)
     min_weight -- minimal value of weights generated
@@ -31,12 +31,12 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
                                    size=(n_vertices, n_vertices))
     adj_matrix = adj_matrix.astype(float)
     shape = adj_matrix.shape
-    
+
     total_elements = adj_matrix.size
     zero_count = int(total_elements * ((100 - edge_density) / 100))
     zero_indices = np.random.choice(total_elements, zero_count,
                                     replace=False)
-            
+
     adj_matrix = adj_matrix.flatten()
     adj_matrix[zero_indices] = 0
     adj_matrix = adj_matrix.reshape(shape)
@@ -51,8 +51,8 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
             adj_matrix[i, selected_index] = new_value
 
     for i in range(len(adj_matrix)):
-        if np.all(adj_matrix[:,i] == 0):
-            zero_indices = np.where(adj_matrix[:,i] == 0)[0]
+        if np.all(adj_matrix[:, i] == 0):
+            zero_indices = np.where(adj_matrix[:, i] == 0)[0]
             zero_indices = zero_indices[zero_indices != i]
             selected_index = np.random.choice(zero_indices)
 
@@ -65,7 +65,7 @@ def generate_adj_matrix(n_vertices, min_weight, max_weight, edge_density):
     return adj_matrix
 
 
-def load_adj_matrix(file_path, separator=" ", 
+def load_adj_matrix(file_path, separator=" ",
                     skip_rows=0, skip_cols=0, none_edge=0):
     """Load file, and return data as matrix.
 
@@ -79,7 +79,7 @@ def load_adj_matrix(file_path, separator=" ",
             if i >= skip_rows:
                 line = line.strip().split(separator)
                 row = line[0+skip_cols:]
-                if type(none_edge) == str:
+                if isinstance(none_edge, str):
                     row = list(map(lambda x: 0 if x == none_edge else x, row))
                     row = list(map(float, row))
                 else:
@@ -112,7 +112,7 @@ def dijkstra(adj_matrix, vertex_index):
     while len(queue):
         u = None
         for i in queue:
-            if u != None:
+            if u is not None:
                 if distances[i] < distances[u]:
                     u = i
             else:
@@ -177,10 +177,10 @@ def main():
 
     distances = all_dijkstra(adj_matrix, dijkstra)
     print(distances)
-    
+
     nx_distances = all_dijkstra(adj_matrix, dijkstra_nxgraph)
     print(nx_distances)
-    
+
     if np.array_equal(distances, nx_distances):
         print("Matice sú rovnaké")
     else:

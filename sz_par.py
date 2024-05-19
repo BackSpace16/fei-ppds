@@ -42,11 +42,12 @@ def main():
         if rank == MASTER:
             start_time = MPI.Wtime()
 
-            adj_matrix = generate_adj_matrix(N_NODES, MIN_WEIGHT, MAX_WEIGHT, EDGE_DENSITY)
+            adj_matrix = generate_adj_matrix(N_NODES, MIN_WEIGHT,
+                                             MAX_WEIGHT, EDGE_DENSITY)
             indices = np.array([i for i in range(N_NODES)])
 
             if indices_modulo != 0:
-                indices_tail = indices[-(N_NODES % nproc) :]
+                indices_tail = indices[-(N_NODES % nproc):]
                 indices = indices[: -(N_NODES % nproc)]
                 indices_tail = indices_tail.reshape(indices_modulo, 1)
 
@@ -57,7 +58,7 @@ def main():
             indices_loc_tail = comm_tail.scatter(indices_tail, root=MASTER)
         adj_matrix = comm.bcast(adj_matrix, root=MASTER)
 
-        if (not nproc_split or 
+        if (not nproc_split or
                 nproc_split and nproc - N_NODES == 0 and rank < nproc):
 
             distances = []
@@ -66,9 +67,9 @@ def main():
 
             distances = np.array(distances)
             all_distances = comm.gather(distances, root=MASTER)
-            
+
             if indices_modulo != 0 and rank < indices_modulo:
-                
+
                 distances_tail = []
                 for i in indices_loc_tail:
                     distances_tail.append(dijkstra(adj_matrix, i))
@@ -77,10 +78,10 @@ def main():
                 distances_tail = comm_tail.gather(distances_tail, root=MASTER)
 
                 if rank == MASTER:
-                    distances_tail = np.array([ss for s in distances_tail for ss in s])
-        
+                    distances_tail = np.concatenate(distances_tail)
+
         if rank == MASTER:
-            distances_par = np.array([ss for s in all_distances for ss in s])
+            distances_par = np.concatenate(all_distances)
             if indices_modulo != 0:
                 distances_par = np.vstack([distances_par, distances_tail])
 
@@ -107,7 +108,7 @@ def main():
                 writer = csv.writer(file)
                 writer.writerow(['Index'])
                 writer.writerows([[str(i)] for i in range(N_ATTEMPTS)])
-                writer.writerows([["Mean"],["Median"],["Std_dev"]])
+                writer.writerows([["Mean"], ["Median"], ["Std_dev"]])
 
         existing_data = []
         with open(csv_file, 'r', newline='') as file:
