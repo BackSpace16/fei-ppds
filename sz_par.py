@@ -2,7 +2,7 @@ import os
 import csv
 import numpy as np
 from mpi4py import MPI
-from sz import generate_adj_matrix, dijkstra, all_dijkstra
+from sz import generate_adj_matrix, dijkstra
 
 
 MASTER = 0
@@ -22,7 +22,6 @@ def main():
     nproc = comm.Get_size()
 
     if rank == MASTER:
-        times_ser = []
         times_par = []
 
     for t in range(N_ATTEMPTS):
@@ -88,18 +87,7 @@ def main():
             elapsed_time_par = end_time - start_time
             times_par.append(elapsed_time_par)
 
-            # serial
-            start_time = MPI.Wtime()
-
-            distances_ser = all_dijkstra(adj_matrix, dijkstra)
-
-            end_time = MPI.Wtime()
-            elapsed_time_ser = end_time - start_time
-            times_ser.append(elapsed_time_ser)
-            
-            print(f"{t}: Parallel: {elapsed_time_par:.4f} s\t Serial: {elapsed_time_ser:.4f} s")
-            if not np.array_equal(distances_par, distances_ser):
-                print("Chyba!!! Matice nie su rovnake")
+            print(f"{t}:\t{elapsed_time_par:.4f} seconds")
 
     if rank == MASTER:
         mean_time_par = np.mean(times_par)
@@ -107,13 +95,10 @@ def main():
         std_deviation_par = np.std(times_par)
         stats_par = [mean_time_par, median_time_par, std_deviation_par]
 
-        mean_time_ser = np.mean(times_ser)
-        median_time_ser = np.median(times_ser)
-        std_deviation_ser = np.std(times_ser)
-        stats_ser = [mean_time_ser, median_time_ser, std_deviation_ser]
-
-        print(stats_par)
-        print(stats_ser)
+        print(30*"-")
+        print(f"Mean time:\t{mean_time_par:.4f} seconds")
+        print(f"Median time:\t{median_time_par:.4f} seconds")
+        print(f"Std. deviation:\t{std_deviation_par:.4f} seconds")
 
         csv_file = CSV
         if not os.path.isfile(csv_file):
@@ -133,14 +118,12 @@ def main():
         existing_data = existing_data[:-3]
         for i, row in enumerate(existing_data):
             row.append(times_par[i])
-            row.append(times_ser[i])
         for i, row in enumerate(existing_data_stat):
             row.append(stats_par[i])
-            row.append(stats_ser[i])
 
         with open(csv_file, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(header + ['Time_Par_'+str(nproc)] + ['Time_Ser_'+str(nproc)])
+            writer.writerow(header + ['Time_'+str(nproc)])
             writer.writerows(existing_data)
             writer.writerows(existing_data_stat)
 
