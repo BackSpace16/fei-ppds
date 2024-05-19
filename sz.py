@@ -3,6 +3,7 @@ from networkx import DiGraph, single_source_dijkstra_path_length
 
 
 def adjacency_matrix_to_nxgraph(adj_matrix):
+    """Create NetworkX graph object from adjacency matrix"""
     graph = DiGraph()
     n = len(adj_matrix)
 
@@ -129,7 +130,7 @@ def dijkstra(adj_matrix, vertex_index):
 
 def dijkstra_nxgraph(adj_matrix, vertex_index):
     """Find shortest path from one vertex to all vertices in graph.
-    Uses graph and dijkstra function from networkx library.
+    Uses graph and dijkstra function from NetworkX library.
 
     Keyword arguments:
     adj_matrix -- adjacency matrix of a graph
@@ -167,7 +168,10 @@ def all_dijkstra(adj_matrix, dijkstra_func):
 
 
 def main():
-    adj_matrix = load_adj_matrix("inputs/input2.txt")
+    """Create adjacency matrix,
+    find all pairs shortest path with dijkstra algorithm and compare
+    the result with NetworkX dijkstra implementation.
+    """
     adj_matrix = generate_adj_matrix(10, 1, 10, 0)
     print(adj_matrix)
 
