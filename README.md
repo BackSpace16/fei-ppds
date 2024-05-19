@@ -25,9 +25,27 @@ Merania boli vykonávané vždy s `1, 2, 3, 4, 6, 8, 12 a 16` počtom procesov n
 **0 - jedna hrana z/do každého vrchola, 100 - úplný graf*<br>
 ***pri nproc = 1 prebehol len jeden pokus vzhľadom na časovú náročnosť*
 
-Na výsledky meraní sa môžeme pozrieť v nasledujúcich grafoch. Hodnoty času predstavujú medián zo všetkých pokusov daného merania.
+Na výsledky meraní sa môžeme pozrieť v nasledujúcich grafoch.
 
+Každé meranie prebiehalo s rôznym počtom pokusov, v nasledujúcom grafe vidíme meranie času vykonania algoritmu na 500 rôznych grafov s 50 vrcholmi.
 
+![Graf 1](https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/sz/graphs/attempts.png?raw=true)
+
+V nasledujúcich grafoch sa pozrieme na súhrnné hodnoty času predstavujúce medián zo všetkých pokusov daného merania pre rôzny počet procesov. V prvom grafe vidíme merania s grafom s 100 vrcholmi a môžeme vidieť porovnanie nastavení s rôznym počtom hrán kde vidíme, že spracovanie riedkych grafov s menším počtom hrán bolo rýchlejšie ako grafy s väčšou hustotou hrán. V druhom grafe vidíme porovnanie s meraniami menšieho grafu s 50 vrcholmi a väčšieho grafu s 250 vrcholmi.
+
+<p align="center">
+    <img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/sz/graphs/100.png?raw=true" width=45%>
+    <img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/sz/graphs/50_100_250.png?raw=true" width=45%>
+</p>
+
+V ďalších grafoch vidíme porovnanie meraní malých grafov s 50 a 100 vrcholmi a súhrnný graf všetkých meraní riedkych grafov.
+
+<p align="center">
+    <img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/sz/graphs/small.png?raw=true" width=45%>
+    <img src="https://github.com/BackSpace16/Vizvary-111488-PPDS2024/blob/sz/graphs/all.png?raw=true" width=45%>
+</p>
+
+Vidíme, že zo zvyšujúcim sa počtom procesov sa čas vykonania algoritmu skracuje, čo bolo našim cieľom paralelizácie.
 
 ### Zdroje:
 https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
