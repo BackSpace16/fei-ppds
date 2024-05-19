@@ -17,6 +17,7 @@ CSV = f"data/{str(N_NODES)}_{str(EDGE_DENSITY)}_{N_ATTEMPTS}.csv"
 
 
 def main():
+    """Parallel version of dijkstra algorithm."""
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     nproc = comm.Get_size()
