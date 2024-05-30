@@ -6,6 +6,8 @@ from tqdm import tqdm
 
 
 async def dwnld_file(session, url, file, destination):
+    """Download file from URL and save it into destination folder."""
+
     destination = os.path.join(destination, file)
     url = url + file
 
@@ -27,6 +29,8 @@ async def dwnld_file(session, url, file, destination):
 
 
 async def main():
+    """Download multiple files asynchronously."""
+
     dwnld_url = "https://ploszek.com/ppds/"
     dwnld_files = [
         "2024-01.uvod_do_paralelnych_a_distribuovanych_vypoctov.pdf",
