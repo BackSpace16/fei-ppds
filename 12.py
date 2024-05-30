@@ -1,11 +1,16 @@
+import os
 from time import perf_counter
 import asyncio
 import aiohttp
 
 
-async def dwnld_file(session, url, file):    
+async def dwnld_file(session, url, file, destination):
+    destination = os.path.join(destination, file)
+
     async with session.get(url+file) as response:
-        print(response)
+        with open(destination, 'wb') as file:
+            async for data in response.content.iter_chunked(1024):
+                file.write(data)
 
 
 async def main():
@@ -22,12 +27,15 @@ async def main():
         "2024-11.async.pdf",
         "2024-12.async2.pdf"
     ]
+    dwnld_dest = "./downloads"
+    os.makedirs(dwnld_dest, exist_ok=True)
+
     time_start = perf_counter()
 
     async with aiohttp.ClientSession() as session:
         tasks = list()
         for file in dwnld_files:
-            tasks.append(dwnld_file(session, dwnld_url, file))
+            tasks.append(dwnld_file(session, dwnld_url, file, dwnld_dest))
 
         await asyncio.gather(*tasks)
 
