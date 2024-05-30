@@ -2,15 +2,28 @@ import os
 from time import perf_counter
 import asyncio
 import aiohttp
+from tqdm import tqdm
 
 
 async def dwnld_file(session, url, file, destination):
     destination = os.path.join(destination, file)
+    url = url + file
 
-    async with session.get(url+file) as response:
+    async with session.get(url) as response:
+        total_size = int(response.headers.get('content-length', 0))
+        progress_bar = tqdm(
+            total=total_size,
+            unit='iB',
+            unit_scale=True,
+            desc=url
+        )
+
         with open(destination, 'wb') as file:
             async for data in response.content.iter_chunked(1024):
                 file.write(data)
+                progress_bar.update(len(data))
+
+        progress_bar.close()
 
 
 async def main():
@@ -40,7 +53,7 @@ async def main():
         await asyncio.gather(*tasks)
 
     time_elapsed = perf_counter() - time_start
-    print(f"Total time elapsed: {time_elapsed:.4f} seconds.")
+    print(f"Total time elapsed: {time_elapsed:.4f} seconds")
 
 
 if __name__ == "__main__":
