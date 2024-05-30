@@ -17,7 +17,7 @@ async def dwnld_file(session, url, file, destination):
             total=total_size,
             unit='iB',
             unit_scale=True,
-            desc=url
+            desc=file
         )
 
         with open(destination, 'wb') as file:
